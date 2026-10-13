@@ -1,0 +1,86 @@
+table 'Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Di (2)'
+	lineageTag: cc932d67-fa07-4065-a771-9c9c127ff965
+
+	measure 'Total de encuestados' = SUM('Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Di (2)'[Population])
+		formatString: 0
+		lineageTag: 4b2e292c-e941-4c16-a4d9-1eb6d7dfbeb6
+
+	measure 'Población Educación Básica' = ```
+			
+			CALCULATE(
+			    SUM('Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Di (2)'[Population]),
+			    'Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Di (2)'[Academic Degree ID] IN {100, 200, 300}
+			) 
+			```
+		formatString: 0
+		lineageTag: 1f9da562-7816-4d90-a3c9-d61e91252b4b
+
+	measure 'Población Educación Media' =
+			
+			CALCULATE(
+			    SUM('Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Di (2)'[Population]),
+			    'Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Di (2)'[Academic Degree ID] IN {400, 500}
+			)
+		formatString: 0
+		lineageTag: 035f67de-bfe3-4883-9320-630a32d112f3
+
+	measure 'Población Educación Superior' =
+			
+			CALCULATE(
+			    SUM('Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Di (2)'[Population]),
+			    'Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Di (2)'[Academic Degree ID] IN {1000, 1100, 1200, 1300, 1400}
+			)
+		formatString: 0
+		lineageTag: a410f275-4449-4adf-ab3a-2853aeb7f252
+
+	column 'Academic Degree ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 96aa5d0f-390a-4e84-992e-3d74684e593a
+		summarizeBy: count
+		sourceColumn: Academic Degree ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Academic Degree'
+		dataType: string
+		lineageTag: 4394cf28-05a7-45ca-8889-12f2692880c9
+		summarizeBy: none
+		sourceColumn: Academic Degree
+
+		annotation SummarizationSetBy = Automatic
+
+	column Population
+		dataType: int64
+		formatString: 0
+		lineageTag: a444ff42-79b5-4c93-ae2d-caf9ed03f740
+		summarizeBy: sum
+		sourceColumn: Population
+
+		annotation SummarizationSetBy = Automatic
+
+	column Percentage
+		dataType: double
+		lineageTag: 8361ee55-812c-40b6-892f-7ff09d0213cf
+		summarizeBy: sum
+		sourceColumn: Percentage
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Di (2)' = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\evilv\Downloads\Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Distribucion-de-la-poblacion-total.csv"),[Delimiter=",", Columns=4, Encoding=65001]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Valor reemplazado" = Table.ReplaceValue(#"Encabezados promovidos",".",",",Replacer.ReplaceText,{"Percentage"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Valor reemplazado",{{"Percentage", type number}, {"Population", Int64.Type}, {"Academic Degree ID", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

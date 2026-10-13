@@ -1,0 +1,19 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-ES
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Distri","Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Di (2)"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Distri
+ref table 'Niveles-de-escolaridad-de-la-poblacion-de-15-anos-y-mas-en-Gomez-Palacio--Di (2)'
+
+ref cultureInfo es-ES
+
